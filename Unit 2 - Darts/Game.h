@@ -11,6 +11,7 @@ public:
 	void InitialisePlayers();
 	void PrintStats();
 	void StartGame();
+	bool CheckForWin();
 
 private:
 	Board* DartBoard;

@@ -2,6 +2,14 @@
 #include <string>
 #include "Board.h"
 using namespace std;
+
+struct PlayerBackup {
+	uint8_t score;
+	uint8_t lastScoreHit;
+	uint8_t hitBulls;
+};
+
+
 class Player
 {
 public:
@@ -9,14 +17,17 @@ public:
 	string GetAccuracy();
 	void SetAccuracy(int value);
 	int GetThrows();
-	void ThrowDart();
+	void ThrowDart(uint8_t currentRound);
 	void ResetStats();
 	int Getbulls();
-	void SetTarget(Board& target);
-	void CheckScore();
+	void SetTarget(Board* target);
+	void CheckScore(uint8_t currentRound);
 	string GetPlayerName();
 	void SetAim(int segmentNumber);
 	int GetLastScore();
+	int GetCurrentScore();
+	void StorePreviousState();
+	void RestorePreviousState();
 
 private:
 	string PlayerName;
@@ -27,5 +38,7 @@ private:
 	int HitBulls;
 	Board* TargetBoard;
 	int Aim;
+	uint8_t AimPref;
+	PlayerBackup prev;
 };
 
