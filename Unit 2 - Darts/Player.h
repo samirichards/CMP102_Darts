@@ -21,13 +21,16 @@ public:
 	void ResetStats();
 	int Getbulls();
 	void SetTarget(Board* target);
-	void CheckScore(uint8_t currentRound);
+	void CheckAim(uint8_t currentRound);
 	string GetPlayerName();
 	void SetAim(int segmentNumber);
 	int GetLastScore();
 	int GetCurrentScore();
 	void StorePreviousState();
 	void RestorePreviousState();
+	SegmentTarget GetIntent();
+	bool CheckBust();
+	void ResetBust();
 
 private:
 	string PlayerName;
@@ -37,8 +40,9 @@ private:
 	int LastScoreHit;
 	int HitBulls;
 	Board* TargetBoard;
-	int Aim;
+	uint8_t Aim;
 	uint8_t AimPref;
 	PlayerBackup prev;
+	bool BustFlag;
 };
 

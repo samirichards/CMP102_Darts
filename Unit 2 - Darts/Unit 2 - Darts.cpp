@@ -11,8 +11,8 @@ int main()
     Board DartBoard;
     Game MainGame = Game(&DartBoard, 3, 20);
 
-    Player Joe = Player("Joe", 71, 501);
-    Player Sid = Player("Sid", 73, 501);
+    Player Joe = Player("Joe", 80, 501);
+    Player Sid = Player("Sid", 60, 501);
 
     MainGame.AddPlayer(&Joe);
     MainGame.AddPlayer(&Sid);

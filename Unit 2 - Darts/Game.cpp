@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include <time.h>
 
 Game::Game(Board* dartBoard, int darts, uint16_t _numberOfRounds)
 {
@@ -20,16 +21,18 @@ void Game::AddPlayer(Player* player)
 	Players.push_back(player);
 }
 
+//Prepares all players in the game to play by resetting their scores and desginating a DartBoard object as the target
 void Game::InitialisePlayers()
 {
 	for (size_t i = 0; i < Players.size(); i++)
 	{
 		Players[i]->ResetStats();
 		Players[i]->SetTarget(DartBoard);
-		Players[i]->CheckScore(3);
+		Players[i]->CheckAim(3);
 	}
 }
 
+//To be used at the end of the game to show statisitcs, currently incomplete
 void Game::PrintStats()
 {
 	std::cout << "There were " << to_string(RoundNumber) << " rounds this game" << endl;
@@ -41,6 +44,7 @@ void Game::PrintStats()
 	}
 }
 
+//Main game logic is executed here
 void Game::StartGame()
 {
 	GameRunning = true;
@@ -52,16 +56,70 @@ void Game::StartGame()
 		RoundNumber++;
 		std::cout << "Round " << RoundNumber << endl;
 
-		for (size_t i = 0; i < Players.size(); i++)
+		for (uint8_t i = 0; i < Players.size(); i++)
 		{
-			for (size_t d = 0; d < DartsPerRound; d++)
+			Players[i]->StorePreviousState();
+			for (uint8_t d = 1; d <= DartsPerRound; d++)
 			{
-				Players[i]->ThrowDart(d);
-				std::cout << Players[i]->GetPlayerName() << " threw and hit a " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
+				if (!Players[i]->CheckBust())
+				{
+					Players[i]->ThrowDart(d);
+
+					if (Players[i]->GetCurrentScore() == 0 && RoundNumber < 3)
+					{
+						std::cout << "FOUL" << endl;
+						std::cout << Players[i]->GetPlayerName() << " hit a " << Players[i]->GetLastScore() << " and went out before the last throw, the turn has been dismissed and has been handed to another player" << endl;
+						Players[i]->RestorePreviousState();
+						d = DartsPerRound;
+						break;
+					}
+
+					std::cout << Players[i]->GetPlayerName() << " Aimed for a ";
+					if (Players[i]->GetIntent().AimModifier == 1)
+					{
+						std::cout << "Single ";
+					}
+					if (Players[i]->GetIntent().AimModifier == 2)
+					{
+						std::cout << "Double ";
+					}
+					if (Players[i]->GetIntent().AimModifier == 3)
+					{
+						std::cout << "Treble ";
+					}
+					std::cout << (int)DartBoard->segments[Players[i]->GetIntent().segmentNumber] << endl;
+					std::cout << Players[i]->GetPlayerName() << " threw and got " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
+				}
+				else 
+				{
+					std::cout << Players[i]->GetPlayerName() << " has bust" << endl;
+				}
+			}
+			Players[i]->ResetBust();
+		}
+		std::cout << "------------------------\n";
+		if (RoundNumber < 30)
+		{
+			GameRunning = !CheckForWin();
+		}
+		else
+		{
+			if (CheckForWin())
+			{
+				GameRunning = false;
+			}
+			else
+			{
+				std::cout << "Game ended in a draw after 30 rounds" << endl;
+				GameRunning = false;
 			}
 		}
-		GameRunning = !CheckForWin();
+
 	} while (GameRunning);
+	if (GetWinner() != UINT8_MAX)
+	{
+		std::cout << Players[GetWinner()]->GetPlayerName() << " is the winner\n";
+	}
 	PrintStats();
 }
 
@@ -77,4 +135,16 @@ bool Game::CheckForWin()
 		}
 	}
 	return value;
+}
+
+uint8_t Game::GetWinner()
+{
+	for (size_t i = 0; i < Players.size(); i++)
+	{
+		if (Players[i]->GetCurrentScore() == 0)
+		{
+			return i;
+		}
+	}
+	return UINT8_MAX;
 }

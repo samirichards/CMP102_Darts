@@ -12,6 +12,7 @@ public:
 	void PrintStats();
 	void StartGame();
 	bool CheckForWin();
+	uint8_t GetWinner();
 
 private:
 	Board* DartBoard;
