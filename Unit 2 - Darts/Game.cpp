@@ -1,12 +1,13 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game(Board* dartBoard, int darts)
+Game::Game(Board* dartBoard, int darts, uint16_t _numberOfRounds)
 {
 	DartBoard = dartBoard;
 	GameRunning = false;
 	RoundNumber = 0;
 	DartsPerRound = darts;
+	NumberOfRounds = _numberOfRounds;
 }
 
 void Game::SetBoard(Board* dartBoard)
@@ -23,9 +24,9 @@ void Game::InitialisePlayers()
 {
 	for (size_t i = 0; i < Players.size(); i++)
 	{
-		((Player)*Players[i]).ResetStats();
-		((Player)*Players[i]).SetTarget(DartBoard);
-		((Player)*Players[i]).CheckScore(3);
+		Players[i]->ResetStats();
+		Players[i]->SetTarget(DartBoard);
+		Players[i]->CheckScore(3);
 	}
 }
 
@@ -56,7 +57,7 @@ void Game::StartGame()
 			for (size_t d = 0; d < DartsPerRound; d++)
 			{
 				Players[i]->ThrowDart(d);
-				std::cout << Players[i]->GetPlayerName() << " threw and hit a " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore();
+				std::cout << Players[i]->GetPlayerName() << " threw and hit a " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
 			}
 		}
 		GameRunning = !CheckForWin();

@@ -7,8 +7,34 @@
 
 
 
+void Board::PopulateArray()
+{
+	//segments[] = { 20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5,20 };
+	segments[0] = 20;
+	segments[1] = 1;
+	segments[2] = 18;
+	segments[3] = 4;
+	segments[5] = 13;
+	segments[6] = 6;
+	segments[7] = 10;
+	segments[8] = 15;
+	segments[9] = 2;
+	segments[10] = 17;
+	segments[11] = 3;
+	segments[12] = 19;
+	segments[13] = 7;
+	segments[14] = 16;
+	segments[15] = 8;
+	segments[16] = 11;
+	segments[17] = 14;
+	segments[18] = 9;
+	segments[19] = 12;
+	segments[20] = 5;
+}
+
 Board::Board()
 {
+	//PopulateArray();
 }
 
 //Board::Board(int _segments[21])

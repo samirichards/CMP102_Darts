@@ -5,7 +5,7 @@
 class Game
 {
 public:
-	Game(Board* dartBoard, int darts);
+	Game(Board* dartBoard, int darts, uint16_t _numberOfRounds);
 	void SetBoard(Board* dartBoard);
 	void AddPlayer(Player* player);
 	void InitialisePlayers();
@@ -19,4 +19,5 @@ private:
 	bool GameRunning;
 	int RoundNumber;
 	int DartsPerRound;
+	uint16_t NumberOfRounds;
 };

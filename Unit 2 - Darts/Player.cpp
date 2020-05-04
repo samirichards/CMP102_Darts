@@ -63,7 +63,7 @@ void Player::ResetStats()
 {
 	Throws = 0;
 	LastScoreHit = 0;
-	CurrentScore = 0;
+	CurrentScore = 501;
 }
 
 int Player::Getbulls()
