@@ -45,86 +45,99 @@ void Game::PrintStats()
 }
 
 //Main game logic is executed here
-void Game::StartGame(uint16_t numberOfGames)
+void Game::StartGame(uint16_t numberOfGames, bool displayText)
 {
 	NumberOfGames = numberOfGames;
-	for (size_t k = 0; k < numberOfGames; k++)
+	if (displayText)
 	{
-		GameRunning = true;
-		InitialisePlayers();
-		RoundNumber = 0;
-
-		do
+		for (size_t k = 0; k < numberOfGames; k++)
 		{
-			RoundNumber++;
-			std::cout << "Round " << RoundNumber << endl;
+			GameRunning = true;
+			InitialisePlayers();
+			RoundNumber = 0;
 
-			for (uint8_t i = 0; i < Players.size(); i++)
+			do
 			{
-				Players[i]->StorePreviousState();
-				for (uint8_t d = 1; d <= DartsPerRound; d++)
+				RoundNumber++;
+				std::cout << "Round " << RoundNumber << endl;
+
+				for (uint8_t i = 0; i < Players.size(); i++)
 				{
-					if (!Players[i]->CheckBust())
+					Players[i]->StorePreviousState();
+					for (uint8_t d = 1; d <= DartsPerRound; d++)
 					{
-						Players[i]->ThrowDart(d);
+						if (!Players[i]->CheckBust())
+						{
+							Players[i]->ThrowDart(d);
 
-						if (Players[i]->GetCurrentScore() == 0 && RoundNumber < 3)
-						{
-							std::cout << "FOUL" << endl;
-							std::cout << Players[i]->GetPlayerName() << " hit a " << Players[i]->GetLastScore() << " and went out before the last throw, the turn has been dismissed and has been handed to another player" << endl;
-							Players[i]->RestorePreviousState();
-							d = DartsPerRound;
-							break;
-						}
+							if (Players[i]->GetCurrentScore() == 0 && RoundNumber < 3)
+							{
+								std::cout << "FOUL" << endl;
+								std::cout << Players[i]->GetPlayerName() << " hit a " << Players[i]->GetLastScore() << " and went out before the last throw, the turn has been dismissed and has been handed to another player" << endl;
+								Players[i]->RestorePreviousState();
+								d = DartsPerRound;
+								break;
+							}
 
-						std::cout << Players[i]->GetPlayerName() << " Aimed for a ";
-						if (Players[i]->GetIntent().AimModifier == 1)
-						{
-							std::cout << "Single ";
+							std::cout << Players[i]->GetPlayerName() << " Aimed for a ";
+							if (Players[i]->GetIntent().AimModifier == 1)
+							{
+								std::cout << "Single ";
+							}
+							if (Players[i]->GetIntent().AimModifier == 2)
+							{
+								std::cout << "Double ";
+							}
+							if (Players[i]->GetIntent().AimModifier == 3)
+							{
+								std::cout << "Treble ";
+							}
+							std::cout << (int)DartBoard->segments[Players[i]->GetIntent().segmentNumber] << endl;
+							std::cout << Players[i]->GetPlayerName() << " threw and got " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
 						}
-						if (Players[i]->GetIntent().AimModifier == 2)
+						else
 						{
-							std::cout << "Double ";
+							std::cout << Players[i]->GetPlayerName() << " has bust" << endl;
 						}
-						if (Players[i]->GetIntent().AimModifier == 3)
-						{
-							std::cout << "Treble ";
-						}
-						std::cout << (int)DartBoard->segments[Players[i]->GetIntent().segmentNumber] << endl;
-						std::cout << Players[i]->GetPlayerName() << " threw and got " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
 					}
-					else
-					{
-						std::cout << Players[i]->GetPlayerName() << " has bust" << endl;
-					}
+					Players[i]->ResetBust();
 				}
-				Players[i]->ResetBust();
-			}
-			std::cout << "------------------------\n";
-			if (RoundNumber < NumberOfRounds)
-			{
-				GameRunning = !CheckForWin();
-			}
-			else
-			{
-				if (CheckForWin())
+				std::cout << "------------------------\n";
+				if (RoundNumber < NumberOfRounds)
 				{
-					GameRunning = false;
+					GameRunning = !CheckForWin();
 				}
 				else
 				{
-					std::cout << "Game ended in a draw after " << NumberOfRounds <<" rounds" << endl;
-					GameRunning = false;
+					if (CheckForWin())
+					{
+						GameRunning = false;
+					}
+					else
+					{
+						std::cout << "Game ended in a draw after " << NumberOfRounds << " rounds" << endl;
+						GameRunning = false;
+					}
 				}
-			}
 
-		} while (GameRunning);
-		if (GetWinner() != UINT8_MAX)
-		{
-			std::cout << Players[GetWinner()]->GetPlayerName() << " is the winner\n";
-			Players[GetWinner()]->IncrementLifetimeWins();
+			} while (GameRunning);
+			if (GetWinner() != UINT8_MAX)
+			{
+				std::cout << Players[GetWinner()]->GetPlayerName() << " is the winner\n";
+				Players[GetWinner()]->IncrementLifetimeWins();
+			}
+			PrintStats();
 		}
-		PrintStats();
+	}
+
+	//Cut down version of the above code which does not make use of any cout statements to speed up execution
+	else
+	{
+		//--------------------------------------------------------------------------------------------------------------------------------------------------------
+		//
+		//Place cout-less reworked code here----------------------------------------------------------------------------------------------------------------------
+		//
+		//--------------------------------------------------------------------------------------------------------------------------------------------------------
 	}
 	PrintLifetimeStats();
 }

@@ -22,6 +22,6 @@ int main()
     MainGame.AddPlayer(&Joe);
     MainGame.AddPlayer(&Sid);
 
-    MainGame.StartGame(GameConfig.NumberOfGames);
+    MainGame.StartGame(GameConfig.NumberOfGames, GameConfig.displayText);
     system("pause");
 }

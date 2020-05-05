@@ -92,4 +92,20 @@ void Config::GetConfig()
         }
         std::cout << "Please only input a number" << std::endl;
     }
+
+    cout << "Would you like to display text when running the simulation (Saying no will speed up execution)(0 for no, anything else for yes)\n";
+    while (std::getline(std::cin, line))
+    {
+        std::stringstream ss(line);
+        if (ss >> d)
+        {
+            if (ss.eof())
+            {
+                displayText = d;
+                break;
+            }
+            break;
+        }
+        std::cout << "Please only input a number" << std::endl;
+    }
 }

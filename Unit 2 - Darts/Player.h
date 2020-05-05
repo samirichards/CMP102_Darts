@@ -31,11 +31,11 @@ public:
 	SegmentTarget GetIntent();
 	bool CheckBust();
 	void ResetBust();
-	uint16_t GetLifetimethrows();
-	uint16_t GetLifetimeBulls();
-	uint16_t GetLifetimeprecisehits();
+	uint32_t GetLifetimethrows();
+	uint32_t GetLifetimeBulls();
+	uint32_t GetLifetimeprecisehits();
 	void IncrementLifetimeWins();
-	uint16_t GetLifetimeWins();
+	uint32_t GetLifetimeWins();
 
 private:
 	string PlayerName;
@@ -51,9 +51,9 @@ private:
 	PlayerBackup prev;
 	bool BustFlag;
 
-	uint16_t lifetimeThrows;
-	uint16_t lifetimeBulls;
-	uint16_t lifetimePreciseHits;
-	uint16_t lifetimeTotalWins;
+	uint32_t lifetimeThrows;
+	uint32_t lifetimeBulls;
+	uint32_t lifetimePreciseHits;
+	uint32_t lifetimeTotalWins;
 };
 

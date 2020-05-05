@@ -15,6 +15,8 @@ public:
 
 	uint8_t JoeAcc = 71;
 	uint8_t SidAcc = 73;
+
+	bool displayText;
 	
 };
 

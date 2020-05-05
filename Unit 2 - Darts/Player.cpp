@@ -182,17 +182,17 @@ void Player::ResetBust()
 	BustFlag = false; 
 }
 
-uint16_t Player::GetLifetimethrows()
+uint32_t Player::GetLifetimethrows()
 {
 	return lifetimeThrows;
 }
 
-uint16_t Player::GetLifetimeBulls()
+uint32_t Player::GetLifetimeBulls()
 {
 	return lifetimeBulls;
 }
 
-uint16_t Player::GetLifetimeprecisehits()
+uint32_t Player::GetLifetimeprecisehits()
 {
 	return lifetimePreciseHits;
 }
@@ -202,7 +202,7 @@ void Player::IncrementLifetimeWins()
 	lifetimeTotalWins++;
 }
 
-uint16_t Player::GetLifetimeWins()
+uint32_t Player::GetLifetimeWins()
 {
 	return lifetimeTotalWins;
 }
