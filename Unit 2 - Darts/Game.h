@@ -12,18 +12,35 @@ public:
 	void PrintStats();
 	void StartGame(uint16_t numberOfGames, bool displayText);
 	bool CheckForWin();
-	uint8_t GetWinner();
+	uint8_t GetRoundWinner();
 	void PrintLifetimeStats();
+	uint8_t GetSetWinner();
+	void IncrementSetNumber();
+	void ResetSetNumber();
+	bool IsMatchWon();
+	void PrintSetStats();
+	uint8_t GetMatchWinner();
 
 private:
 	Board* DartBoard;
 	std::vector<Player*> Players;
 	bool GameRunning;
 
-	int RoundNumber;
-	int DartsPerRound;
+	int RoundNumber = 0;
+	int DartsPerRound = 3;
 
-	int SetNumber;
-	uint16_t NumberOfRounds;
+	int SetNumber = 0;
+	int NumberOfSets = 0;
+
+	int MatchNumber = 0;
+	int NumberOfMatches = 0;
+
+	uint16_t NumberOfRounds = 0;
 	uint16_t NumberOfGames = 0;
+
+	//3 Rounds per set
+	//	Each set is best of 3
+
+	//Max of 13 sets per match
+	//	Effectively 7 is the finishing line for sets
 };

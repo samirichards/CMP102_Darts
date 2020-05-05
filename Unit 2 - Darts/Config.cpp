@@ -61,7 +61,7 @@ void Config::GetConfig()
         std::cout << "Please only input a number" << std::endl;
     }
 
-	cout << "What would you like the max rounds per game to be? (Default is 30)\n";
+	cout << "What would you like the max rounds per set to be? (Default is 30)\n";
     while (std::getline(std::cin, line))
     {
         std::stringstream ss(line);
@@ -77,7 +77,7 @@ void Config::GetConfig()
         std::cout << "Please only input a number" << std::endl;
     }
 
-	cout << "How many games would you like to simulate? (Default is 1)\n";
+	cout << "How many matches would you like to simulate? (Default is 1)\n";
     while (std::getline(std::cin, line))
     {
         std::stringstream ss(line);

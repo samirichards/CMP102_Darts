@@ -37,6 +37,15 @@ public:
 	void IncrementLifetimeWins();
 	uint32_t GetLifetimeWins();
 
+	uint32_t GetTotalSetWins();
+	uint32_t GetTotalMatchWins();
+	void IncrementSetWins();
+	void IncrementMatchWins();
+
+	uint32_t GetRoundsWonInSet();
+	void IncrementRoundsWonInSet();
+	void ResetRoundsWon();
+
 private:
 	string PlayerName;
 	int Accuracy;
@@ -51,9 +60,15 @@ private:
 	PlayerBackup prev;
 	bool BustFlag;
 
+	uint32_t RoundWonInSet;
+	uint32_t TotalSetWins;
+	uint32_t TotalMatchWins;
+
 	uint32_t lifetimeThrows;
 	uint32_t lifetimeBulls;
 	uint32_t lifetimePreciseHits;
+
+	//This means individual round wins
 	uint32_t lifetimeTotalWins;
 };
 

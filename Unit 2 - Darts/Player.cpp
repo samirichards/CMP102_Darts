@@ -206,3 +206,38 @@ uint32_t Player::GetLifetimeWins()
 {
 	return lifetimeTotalWins;
 }
+
+uint32_t Player::GetTotalSetWins()
+{
+	return TotalSetWins;
+}
+
+uint32_t Player::GetTotalMatchWins()
+{
+	return TotalMatchWins;
+}
+
+void Player::IncrementSetWins()
+{
+	TotalSetWins++;
+}
+
+void Player::IncrementMatchWins()
+{
+	TotalMatchWins++;
+}
+
+uint32_t Player::GetRoundsWonInSet()
+{
+	return RoundWonInSet;
+}
+
+void Player::IncrementRoundsWonInSet()
+{
+	RoundWonInSet++;
+}
+
+void Player::ResetRoundsWon()
+{
+	RoundWonInSet = 0;
+}
