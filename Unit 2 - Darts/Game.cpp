@@ -88,7 +88,7 @@ void Game::StartGame(uint16_t numberOfGames, bool displayText)
 			do
 			{
 				//3 rounds per set Loop
-				for (size_t roundNo = 1; roundNo < 4; roundNo++)
+				for (size_t roundNo = 1; roundNo < 6; roundNo++)
 				{
 					GameRunning = true;
 					InitialisePlayers();
