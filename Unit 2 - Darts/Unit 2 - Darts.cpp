@@ -5,18 +5,23 @@
 #include "Board.h"
 #include "Game.h"
 #include "Player.h"
+#include "Config.h"
 
 int main()
 {
     Board DartBoard;
-    Game MainGame = Game(&DartBoard, 3, 20);
+    
+    Config GameConfig;
+    GameConfig.GetConfig();
 
-    Player Joe = Player("Joe", 80, 501);
-    Player Sid = Player("Sid", 60, 501);
+    Game MainGame = Game(&DartBoard, 3, GameConfig.MaxRounds);
+
+    Player Joe = Player("Joe", GameConfig.JoeAcc, GameConfig.StartingScore);
+    Player Sid = Player("Sid", GameConfig.SidAcc, GameConfig.StartingScore);
 
     MainGame.AddPlayer(&Joe);
     MainGame.AddPlayer(&Sid);
 
-    MainGame.StartGame();
+    MainGame.StartGame(GameConfig.NumberOfGames);
     system("pause");
 }

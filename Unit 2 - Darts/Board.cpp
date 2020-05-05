@@ -191,12 +191,14 @@ SegmentTarget Board::GetBestTarget(uint8_t goal)
 		{
 			if (goal % 2 == 0)
 			{
-				return { GetSegmentNumber(floor(goal / 2)), 2 };
+				return { GetSegmentNumber((uint8_t)floor(goal / 2)), 2 };
 			}
 			else if (goal % 3 == 0)
 			{
-				return { GetSegmentNumber(floor(goal / 3)), 3 };
+				return { GetSegmentNumber((uint8_t)floor(goal / 3)), 3 };
 			}
 		}
+		return { GetSegmentNumber(1), 1 };
 	}
+	return { GetSegmentNumber(1), 1 };
 }

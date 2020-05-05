@@ -10,9 +10,10 @@ public:
 	void AddPlayer(Player* player);
 	void InitialisePlayers();
 	void PrintStats();
-	void StartGame();
+	void StartGame(uint16_t numberOfGames);
 	bool CheckForWin();
 	uint8_t GetWinner();
+	void PrintLifetimeStats();
 
 private:
 	Board* DartBoard;
@@ -21,4 +22,5 @@ private:
 	int RoundNumber;
 	int DartsPerRound;
 	uint16_t NumberOfRounds;
+	uint16_t NumberOfGames = 0;
 };

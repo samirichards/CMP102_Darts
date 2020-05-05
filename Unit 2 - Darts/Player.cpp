@@ -9,9 +9,9 @@ Player::Player(string name, int accuracy, int startingScore)
 	CurrentScore = startingScore;
 }
 
-string Player::GetAccuracy()
+int Player::GetAccuracy()
 {
-	return to_string(Accuracy) + "/%";
+	return Accuracy;
 }
 
 void Player::SetAccuracy(int value)
@@ -37,6 +37,11 @@ void Player::ThrowDart(uint8_t currentRound)
 		if (temp == 50 || temp == 25)
 		{
 			HitBulls++;
+			lifetimeBulls++;
+			if (temp == (25 * AimPref))
+			{
+				lifetimePreciseHits++;
+			}
 			
 		}
 		//But regardless of if a bull was hit or not, reduce the score by what came back (since the player can miss and hit a segment around the bull)
@@ -49,6 +54,7 @@ void Player::ThrowDart(uint8_t currentRound)
 			BustFlag = true;
 		}
 		Throws++;
+		lifetimeThrows++;
 		LastScoreHit = temp;
 	}
 	else
@@ -59,12 +65,17 @@ void Player::ThrowDart(uint8_t currentRound)
 		if (CurrentScore - temp >= 0)
 		{
 			CurrentScore -= temp;
+			if (temp == (TargetBoard->segments[Aim] * AimPref))
+			{
+				lifetimePreciseHits++;
+			}
 		}
 		else 
 		{
 			BustFlag = true;
 		}
 		Throws++;
+		lifetimeThrows++;
 		LastScoreHit = temp;
 	}
 }
@@ -115,7 +126,7 @@ void Player::CheckAim(uint8_t currentRound) {
 		}
 		if (currentRound == 3)
 		{
-			int goal = (int)floor(CurrentScore);
+			int goal = CurrentScore;
 			Aim = TargetBoard->GetBestTarget(goal).segmentNumber;
 			AimPref = TargetBoard->GetBestTarget(goal).AimModifier;
 		}
@@ -169,4 +180,29 @@ bool Player::CheckBust()
 void Player::ResetBust()
 {
 	BustFlag = false; 
+}
+
+uint16_t Player::GetLifetimethrows()
+{
+	return lifetimeThrows;
+}
+
+uint16_t Player::GetLifetimeBulls()
+{
+	return lifetimeBulls;
+}
+
+uint16_t Player::GetLifetimeprecisehits()
+{
+	return lifetimePreciseHits;
+}
+
+void Player::IncrementLifetimeWins()
+{
+	lifetimeTotalWins++;
+}
+
+uint16_t Player::GetLifetimeWins()
+{
+	return lifetimeTotalWins;
 }
