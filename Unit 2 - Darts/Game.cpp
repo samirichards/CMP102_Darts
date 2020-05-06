@@ -2,7 +2,7 @@
 #include <iostream>
 #include <time.h>
 
-Game::Game(Board* dartBoard, int darts, uint16_t _numberOfRounds)
+Game::Game(Board* dartBoard, int darts, uint32_t _numberOfRounds)
 {
 	DartBoard = dartBoard;
 	GameRunning = false;
@@ -45,9 +45,14 @@ void Game::PrintStats()
 }
 
 //To be used at the end of a match to show stats about the sets that were played
-void Game::PrintSetStats()
+void Game::PrintSetStats(uint32_t MatchNumber)
 {
-	std::cout << "There were " << to_string(SetNumber) << " sets this match" << endl;
+	if (MatchNumber == 249)
+	{
+		std::cout << "Debugghing thing here, please ignore\n";
+	}
+	std::cout << "Match Number: " << MatchNumber << endl;
+	std::cout << "There were " << SetNumber << " sets this match" << endl;
 	for (size_t i = 0; i < Players.size(); i++)
 	{
 		std::cout << Players[i]->GetPlayerName() << " won " << Players[i]->GetTotalSetWins() << " sets this match " << endl;
@@ -58,7 +63,7 @@ void Game::PrintSetStats()
 
 uint8_t Game::GetMatchWinner()
 {
-	uint8_t CurrentMaxScore = 0;
+	uint32_t CurrentMaxScore = 0;
 	for (size_t i = 0; i < Players.size(); i++)
 	{
 		if (CurrentMaxScore < Players[i]->GetTotalSetWins())
@@ -76,7 +81,7 @@ uint8_t Game::GetMatchWinner()
 }
 
 //Main game logic is executed here
-void Game::StartGame(uint16_t numberOfGames, bool displayText)
+void Game::StartGame(uint32_t numberOfGames, bool displayText)
 {
 	NumberOfGames = numberOfGames;
 	if (displayText)
@@ -179,7 +184,7 @@ void Game::StartGame(uint16_t numberOfGames, bool displayText)
 				}
 				IncrementSetNumber();
 			} while (!IsMatchWon());
-			PrintSetStats();
+			PrintSetStats(k);
 		}
 	}
 
@@ -254,7 +259,6 @@ void Game::StartGame(uint16_t numberOfGames, bool displayText)
 				}
 				IncrementSetNumber();
 			} while (!IsMatchWon());
-			PrintSetStats();
 		}
 	}
 	PrintLifetimeStats();
