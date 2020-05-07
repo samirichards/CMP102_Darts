@@ -1,6 +1,5 @@
 #include "Game.h"
 #include <iostream>
-#include <time.h>
 
 Game::Game(Board* dartBoard, int darts, uint32_t _numberOfRounds)
 {
@@ -47,10 +46,6 @@ void Game::PrintStats()
 //To be used at the end of a match to show stats about the sets that were played
 void Game::PrintSetStats(uint32_t MatchNumber)
 {
-	if (MatchNumber == 249)
-	{
-		std::cout << "Debugghing thing here, please ignore\n";
-	}
 	std::cout << "Match Number: " << MatchNumber << endl;
 	std::cout << "There were " << SetNumber << " sets this match" << endl;
 	for (size_t i = 0; i < Players.size(); i++)
@@ -61,23 +56,24 @@ void Game::PrintSetStats(uint32_t MatchNumber)
 	std::cout <<"	" << Players[GetMatchWinner()]->GetPlayerName() << " was the overall winner this match" << endl;
 }
 
-uint8_t Game::GetMatchWinner()
+uint32_t Game::GetMatchWinner()
 {
 	uint32_t CurrentMaxScore = 0;
-	for (size_t i = 0; i < Players.size(); i++)
+	for (uint32_t i = 0; i < Players.size(); i++)
 	{
 		if (CurrentMaxScore < Players[i]->GetTotalSetWins())
 		{
 			CurrentMaxScore = Players[i]->GetTotalSetWins();
 		}
 	}
-	for (size_t i = 0; i < Players.size(); i++)
+	for (uint32_t i = 0; i < Players.size(); i++)
 	{
 		if (CurrentMaxScore == Players[i]->GetTotalSetWins())
 		{
 			return i;
 		}
 	}
+	return 0;
 }
 
 //Main game logic is executed here
@@ -86,7 +82,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 	NumberOfGames = numberOfGames;
 	if (displayText)
 	{
-		for (size_t k = 0; k < numberOfGames; k++)
+		for (uint32_t k = 0; k < numberOfGames; k++)
 		{
 			ResetSetNumber();
 			//This do loop will continue until there is an overall match winner (aka if any player has a total sets won of more than or equal to 7)
@@ -118,7 +114,6 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 										std::cout << "FOUL" << endl;
 										std::cout << Players[i]->GetPlayerName() << " hit a " << Players[i]->GetLastScore() << " and went out before the last throw, the turn has been dismissed and has been handed to another player" << endl;
 										Players[i]->RestorePreviousState();
-										d = DartsPerRound;
 										break;
 									}
 
@@ -135,7 +130,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 									{
 										std::cout << "Treble ";
 									}
-									std::cout << (int)DartBoard->segments[Players[i]->GetIntent().segmentNumber] << endl;
+									std::cout << static_cast<int>(DartBoard->segments[Players[i]->GetIntent().segmentNumber]) << endl;
 									std::cout << Players[i]->GetPlayerName() << " threw and got " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
 								}
 								else
@@ -185,6 +180,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 				IncrementSetNumber();
 			} while (!IsMatchWon());
 			PrintSetStats(k);
+			Players[GetMatchWinner()]->IncrementMatchWins();
 		}
 	}
 
@@ -219,7 +215,6 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 									if (Players[i]->GetCurrentScore() == 0 && RoundNumber < 3)
 									{
 										Players[i]->RestorePreviousState();
-										d = DartsPerRound;
 										break;
 									}
 								}
@@ -232,14 +227,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 						}
 						else
 						{
-							if (CheckForWin())
-							{
-								GameRunning = false;
-							}
-							else
-							{
-								GameRunning = false;
-							}
+							GameRunning = !CheckForWin();
 						}
 
 					} while (GameRunning);
@@ -259,6 +247,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 				}
 				IncrementSetNumber();
 			} while (!IsMatchWon());
+			Players[GetMatchWinner()]->IncrementMatchWins();
 		}
 	}
 	PrintLifetimeStats();
@@ -299,11 +288,13 @@ void Game::PrintLifetimeStats()
 		std::cout << Players[i]->GetPlayerName() << " Total throws = " << Players[i]->GetLifetimethrows() << endl;
 		std::cout << "Total bulls hit = " << Players[i]->GetLifetimeBulls() << endl;
 		std::cout << "Total precise hits = " << Players[i]->GetLifetimeprecisehits() << endl;
-		std::cout << "Total wins = " << Players[i]->GetLifetimeWins() << endl;
+		std::cout << "Total wins (Individual rounds) = " << Players[i]->GetLifetimeWins() << endl;
+		std::cout << "Total sets won = " << Players[i]->GetTotalSetWins() << endl;
+		std::cout << "Total matches won = " << Players[i]->GetTotalMatchWins() << endl;
 		std::cout << "Reported accuracy = " << Players[i]->GetAccuracy() << "% \n";
-		std::cout << "Projected Accuracy = " << (double)Players[i]->GetAccuracy() * ((double)Players[i]->GetAccuracy() / 100) << "% \n";
+		std::cout << "Projected Accuracy = " << static_cast<double>(Players[i]->GetAccuracy()) * (static_cast<double>(Players[i]->GetAccuracy()) / 100) << "% \n";
 		
-		std::cout << "Real accuracy: " << ((double)Players[i]->GetLifetimeprecisehits() / (double)Players[i]->GetLifetimethrows()) * 100 << "%" << endl;
+		std::cout << "Real accuracy: " << (static_cast<double>(Players[i]->GetLifetimeprecisehits()) / static_cast<double>(Players[i]->GetLifetimethrows())) * 100 << "%" << endl;
 
 		std::cout << "-------------------\n";
 	}
@@ -313,20 +304,21 @@ void Game::PrintLifetimeStats()
 uint8_t Game::GetSetWinner()
 {
 	uint8_t CurrentMaxScore = 0;
-	for (size_t i = 0; i < Players.size(); i++)
+	for (uint32_t i = 0; i < Players.size(); i++)
 	{
 		if (CurrentMaxScore < Players[i]->GetRoundsWonInSet())
 		{
 			CurrentMaxScore = Players[i]->GetRoundsWonInSet();
 		}
 	}
-	for (size_t i = 0; i < Players.size(); i++)
+	for (uint32_t i = 0; i < Players.size(); i++)
 	{
 		if (CurrentMaxScore == Players[i]->GetRoundsWonInSet())
 		{
 			return i;
 		}
 	}
+	return 0;
 }
 
 void Game::IncrementSetNumber()

@@ -15,7 +15,6 @@ class Player
 public:
 	Player(string name, int accuracy, int startingScore);
 	int GetAccuracy();
-	void SetAccuracy(int value);
 	int GetThrows();
 	void ThrowDart(uint8_t currentRound);
 	void ResetStats();
@@ -23,7 +22,6 @@ public:
 	void SetTarget(Board* target);
 	void CheckAim(uint8_t currentRound);
 	string GetPlayerName();
-	void SetAim(int segmentNumber);
 	int GetLastScore();
 	int GetCurrentScore();
 	void StorePreviousState();

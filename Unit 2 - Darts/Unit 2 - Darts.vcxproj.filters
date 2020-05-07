@@ -47,5 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="CPPRuleSet.ruleset" />
   </ItemGroup>
 </Project>

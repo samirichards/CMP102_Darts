@@ -1,5 +1,4 @@
 #include "Player.h"
-#include <math.h>
 #include <iostream>
 
 Player::Player(string name, int accuracy, int startingScore)
@@ -14,11 +13,6 @@ int Player::GetAccuracy()
 	return Accuracy;
 }
 
-void Player::SetAccuracy(int value)
-{
-	Accuracy = value;
-}
-
 int Player::GetThrows()
 {
 	return Throws;
@@ -28,56 +22,37 @@ void Player::ThrowDart(uint8_t currentRound)
 {
 	//Set the targets before throwing
 	CheckAim(currentRound);
+	
+	int temp = TargetBoard->AimForSegment(Aim, AimPref, Accuracy);
 
-	//Special condition for aiming at the bull which is easily recognised
-	if (Aim == INT_MAX)
+	//Check if the score coming back from the board would be valid if deducted from the players score
+	if (CurrentScore - temp >= 0)
 	{
-		//If an inner or outer bull was hit then increment the bull counter
-		int temp = TargetBoard->AimForSegment(21, Accuracy, AimPref);
+		//Increment stats if the player managed to hit a bull (inner or outer)
 		if (temp == 50 || temp == 25)
 		{
 			HitBulls++;
 			lifetimeBulls++;
-			if (temp == (25 * AimPref))
-			{
-				lifetimePreciseHits++;
-			}
-			
 		}
-		//But regardless of if a bull was hit or not, reduce the score by what came back (since the player can miss and hit a segment around the bull)
-		if (CurrentScore - temp >= 0)
-		{
-			CurrentScore -= temp;
-		}
-		else
-		{
-			BustFlag = true;
-		}
-		Throws++;
-		lifetimeThrows++;
-		LastScoreHit = temp;
-	}
-	else
-	{
-		//Decrement the current score as long as it won't cause it to dip below 0
+		CurrentScore -= temp;
 
-		int temp = TargetBoard->AimForSegment(Aim, AimPref, Accuracy);
-		if (CurrentScore - temp >= 0)
+		//Verify that the player hit what they were intending to aim for, if they did then register it as a precise hit
+		if (temp == (TargetBoard->segments[Aim] * AimPref))
 		{
-			CurrentScore -= temp;
-			if (temp == (TargetBoard->segments[Aim] * AimPref))
-			{
-				lifetimePreciseHits++;
-			}
+			lifetimePreciseHits++;
 		}
-		else 
-		{
-			BustFlag = true;
-		}
-		Throws++;
-		lifetimeThrows++;
-		LastScoreHit = temp;
 	}
+
+	//Flag that the player has bust this round if the score they would have got would have dipped below 0
+	else 
+	{
+		BustFlag = true;
+	}
+
+	//Regardless of if the score was deducted or not register a throw from the player
+	Throws++;
+	lifetimeThrows++;
+	LastScoreHit = temp;
 }
 
 void Player::ResetStats()
@@ -103,24 +78,28 @@ void Player::SetTarget(Board *target)
 void Player::CheckAim(uint8_t currentRound) {
 	if (CurrentScore == 1)
 	{
+		//Being at a score of 1 at any point should not be allowed since you can only finish from an even number 2 and up on the last throw
 		BustFlag = true;
 	}
 	if (CurrentScore > 63)
 	{
+		//Above this value it really is best to just aim for the highest value you can
+		//Below this is where you need to strategize  based on the current situation 
 		Aim = 0;
 		AimPref = 3;
 	}
 	else
 	{
+		//Aim for 1/currentRound of what is left of your score, if all goes well then this should result in the player winning this round
 		if (currentRound == 1)
 		{
-			int goal = (int)floor(CurrentScore / 3);
+			int goal = static_cast<int>(floor(CurrentScore / 3));
 			Aim = TargetBoard->GetBestTarget(goal).segmentNumber;
 			AimPref = TargetBoard->GetBestTarget(goal).AimModifier;
 		}
 		if (currentRound == 2)
 		{
-			int goal = (int)floor(CurrentScore / 2);
+			int goal = static_cast<int>(floor(CurrentScore / 2));
 			Aim = TargetBoard->GetBestTarget(goal).segmentNumber;
 			AimPref = TargetBoard->GetBestTarget(goal).AimModifier;
 		}
@@ -136,11 +115,6 @@ void Player::CheckAim(uint8_t currentRound) {
 string Player::GetPlayerName()
 {
 	return PlayerName;
-}
-
-void Player::SetAim(int segmentNumber)
-{
-	Aim = segmentNumber;
 }
 
 int Player::GetLastScore()

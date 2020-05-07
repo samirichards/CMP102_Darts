@@ -5,54 +5,14 @@
 #include <iostream>
 #include <vector>
 
-
-
-void Board::PopulateArray()
-{
-	//segments[] = { 20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5,20 };
-	segments[0] = 20;
-	segments[1] = 1;
-	segments[2] = 18;
-	segments[3] = 4;
-	segments[5] = 13;
-	segments[6] = 6;
-	segments[7] = 10;
-	segments[8] = 15;
-	segments[9] = 2;
-	segments[10] = 17;
-	segments[11] = 3;
-	segments[12] = 19;
-	segments[13] = 7;
-	segments[14] = 16;
-	segments[15] = 8;
-	segments[16] = 11;
-	segments[17] = 14;
-	segments[18] = 9;
-	segments[19] = 12;
-	segments[20] = 5;
-}
-
-Board::Board()
-{
-	//PopulateArray();
-	srand(time(NULL));
-}
-
-//Board::Board(int _segments[21])
-//{
-//	memcpy(segments, _segments, 21 * sizeof(int));
-//}
-
-//void Board::SetSegments(int _segments[21])
-//{
-//	memcpy(segments, _segments, 21 * sizeof(int));
-//}
+Board::Board() = default;
 
 int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accuracy)
 {
 	//aimPreference == 1 == Just aim for the normal segment
 	//aimPreference == 2 == Aim for a double
 	//aimPreference == 3 == Aim for a treble
+
 	uint8_t value = rand() % 100;
 	//std::cout << "Board returned value: " << (int)value << std::endl;
 	int retValue = 0;
@@ -61,7 +21,7 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 	//This is to reduce the work required for allowing the players to target bulls
 	if (segmentNumber == 21)
 	{
-		if (value < accuracy)
+		if (static_cast<double>(value) < accuracy)
 		{
 			if (value < (accuracy * (accuracy / 100)))
 			{
@@ -73,7 +33,7 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 			}
 		}
 		else {
-			srand(time(NULL));
+			srand(time(nullptr));
 			uint8_t segTarget = rand() % 20;
 			return segments[segTarget];
 		}
@@ -116,7 +76,7 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 	//If the value is less than accuracy% of accuracy then return the value they want multiplied by the given modifier, else just give them the segment as a single
 	//This respects the accuracy stat, and rewards players with a high accuracy (this will be important in task 3 where the player can achieve a 100% accuracy)
 
-	if (value < (int)floor(accuracy * (accuracy / 100)))
+	if (value < static_cast<int>(floor(accuracy * (accuracy / 100))))
 	{
 		return retValue * aimPreference;
 	}
@@ -124,8 +84,6 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 	{
 		return retValue;
 	}
-
-	return 0;
 }
 
 //int Board::AimForBull(int accuracy, bool aimPreference)
@@ -169,7 +127,11 @@ SegmentTarget Board::GetBestTarget(uint8_t goal)
 		if (goal == 50)
 		{
 			//Special case for if the goal is 50, since the below code would be unable to deal with it without significant modification
-			return{ GetSegmentNumber(25), 2 };
+			return{ 21, 2 };
+		}
+		if (goal == 25)
+		{
+			return { 21, 1 };
 		}
 
 		//Find if the goal can be found in the array as a single target (including the outer bull)
@@ -191,14 +153,13 @@ SegmentTarget Board::GetBestTarget(uint8_t goal)
 		{
 			if (goal % 2 == 0)
 			{
-				return { GetSegmentNumber((uint8_t)floor(goal / 2)), 2 };
+				return { GetSegmentNumber(static_cast<uint8_t>(floor(goal / 2))), 2 };
 			}
 			else if (goal % 3 == 0)
 			{
-				return { GetSegmentNumber((uint8_t)floor(goal / 3)), 3 };
+				return { GetSegmentNumber(static_cast<uint8_t>(floor(goal / 3))), 3 };
 			}
 		}
 		return { GetSegmentNumber(1), 1 };
 	}
-	return { GetSegmentNumber(1), 1 };
 }

@@ -8,9 +8,6 @@ struct SegmentTarget {
 
 class Board
 {
-private:
-	void PopulateArray();
-
 public:
 	Board();
 	//Board(int _segments[21]);
