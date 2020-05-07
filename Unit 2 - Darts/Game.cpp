@@ -10,11 +10,6 @@ Game::Game(Board* dartBoard, int darts, uint32_t _numberOfRounds)
 	NumberOfRounds = _numberOfRounds;
 }
 
-void Game::SetBoard(Board* dartBoard)
-{
-	DartBoard = dartBoard;
-}
-
 void Game::AddPlayer(Player* player)
 {
 	Players.push_back(player);
@@ -221,14 +216,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 							}
 							Players[i]->ResetBust();
 						}
-						if (RoundNumber < NumberOfRounds)
-						{
-							GameRunning = !CheckForWin();
-						}
-						else
-						{
-							GameRunning = !CheckForWin();
-						}
+						GameRunning = !CheckForWin();
 
 					} while (GameRunning);
 
@@ -287,14 +275,14 @@ void Game::PrintLifetimeStats()
 	{
 		std::cout << Players[i]->GetPlayerName() << " Total throws = " << Players[i]->GetLifetimethrows() << endl;
 		std::cout << "Total bulls hit = " << Players[i]->GetLifetimeBulls() << endl;
-		std::cout << "Total precise hits = " << Players[i]->GetLifetimeprecisehits() << endl;
+		std::cout << "Total precise hits = " << Players[i]->GetLifetimePreciseHits() << endl;
 		std::cout << "Total wins (Individual rounds) = " << Players[i]->GetLifetimeWins() << endl;
 		std::cout << "Total sets won = " << Players[i]->GetTotalSetWins() << endl;
 		std::cout << "Total matches won = " << Players[i]->GetTotalMatchWins() << endl;
 		std::cout << "Reported accuracy = " << Players[i]->GetAccuracy() << "% \n";
 		std::cout << "Projected Accuracy = " << static_cast<double>(Players[i]->GetAccuracy()) * (static_cast<double>(Players[i]->GetAccuracy()) / 100) << "% \n";
 		
-		std::cout << "Real accuracy: " << (static_cast<double>(Players[i]->GetLifetimeprecisehits()) / static_cast<double>(Players[i]->GetLifetimethrows())) * 100 << "%" << endl;
+		std::cout << "Real accuracy: " << (static_cast<double>(Players[i]->GetLifetimePreciseHits()) / static_cast<double>(Players[i]->GetLifetimethrows())) * 100 << "%" << endl;
 
 		std::cout << "-------------------\n";
 	}
@@ -345,9 +333,6 @@ bool Game::IsMatchWon()
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 
 }

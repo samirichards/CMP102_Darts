@@ -9,7 +9,6 @@ void Config::GetConfig()
     //Validation code here was helped by the code found here:
     //https://stackoverflow.com/questions/10828937/how-to-make-cin-take-only-numbers
 
-
 	cout << "What would you like the starting score to be? (Default is 501)\n";
 
     std::string line;

@@ -5,8 +5,6 @@
 #include <iostream>
 #include <vector>
 
-Board::Board() = default;
-
 int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accuracy)
 {
 	//aimPreference == 1 == Just aim for the normal segment
@@ -27,16 +25,11 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 			{
 				return segments[segmentNumber] * aimPreference;
 			}
-			else
-			{
-				return segments[segmentNumber];
-			}
+			return segments[segmentNumber];
 		}
-		else {
-			srand(time(nullptr));
-			uint8_t segTarget = rand() % 20;
-			return segments[segTarget];
-		}
+		srand(time(nullptr));
+		uint8_t segTarget = rand() % 20;
+		return segments[segTarget];
 	}
 
 	//This section of code is used to target anything but a bull
@@ -80,10 +73,7 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 	{
 		return retValue * aimPreference;
 	}
-	else
-	{
-		return retValue;
-	}
+	return retValue;
 }
 
 //int Board::AimForBull(int accuracy, bool aimPreference)
@@ -120,46 +110,36 @@ SegmentTarget Board::GetBestTarget(uint8_t goal)
 	{
 		return { 0, 3 };
 	}
-	else
+	//Revised aiming tactic if the goal is low enough then simply aim for the normal segment
+			//This will increase the odds of actually hitting the value you want (since hitting a double 2 is much harder than a single 4)
+	if (goal == 50)
 	{
-		//Revised aiming tactic if the goal is low enough then simply aim for the normal segment
-		//This will increase the odds of actually hitting the value you want (since hitting a double 2 is much harder than a single 4)
-		if (goal == 50)
-		{
-			//Special case for if the goal is 50, since the below code would be unable to deal with it without significant modification
-			return{ 21, 2 };
-		}
-		if (goal == 25)
-		{
-			return { 21, 1 };
-		}
+		//Special case for if the goal is 50, since the below code would be unable to deal with it without significant modification
+		return{ 21, 2 };
+	}
+	if (goal == 25)
+	{
+		return { 21, 1 };
+	}
 
-		//Find if the goal can be found in the array as a single target (including the outer bull)
-		uint8_t* searchArray = std::find(std::begin(segments), std::end(segments), goal);
-		if (searchArray != std::end(segments))
+	//Find if the goal can be found in the array as a single target (including the outer bull)
+	uint8_t* searchArray = std::find(std::begin(segments), std::end(segments), goal);
+	if (searchArray != std::end(segments))
+	{
+		if (GetSegmentNumber(goal) != NULL)
 		{
-			if (GetSegmentNumber(goal) != NULL)
-			{
-				return { GetSegmentNumber(goal), 1 };
-			}
-			else 
-			{
-				return { GetSegmentNumber(1), 1 };
-			}
-		}
-
-		//If the above check fails then try to find if the target could be gotten with doubles or trebles
-		else
-		{
-			if (goal % 2 == 0)
-			{
-				return { GetSegmentNumber(static_cast<uint8_t>(floor(goal / 2))), 2 };
-			}
-			else if (goal % 3 == 0)
-			{
-				return { GetSegmentNumber(static_cast<uint8_t>(floor(goal / 3))), 3 };
-			}
+			return { GetSegmentNumber(goal), 1 };
 		}
 		return { GetSegmentNumber(1), 1 };
 	}
+	//If the above check fails then try to find if the target could be gotten with doubles or trebles
+	if (goal % 2 == 0)
+	{
+		return { GetSegmentNumber(static_cast<uint8_t>(floor(goal / 2))), 2 };
+	}
+	if (goal % 3 == 0)
+	{
+		return { GetSegmentNumber(static_cast<uint8_t>(floor(goal / 3))), 3 };
+	}
+	return { GetSegmentNumber(1), 1 };
 }

@@ -166,7 +166,7 @@ uint32_t Player::GetLifetimeBulls()
 	return lifetimeBulls;
 }
 
-uint32_t Player::GetLifetimeprecisehits()
+uint32_t Player::GetLifetimePreciseHits()
 {
 	return lifetimePreciseHits;
 }
