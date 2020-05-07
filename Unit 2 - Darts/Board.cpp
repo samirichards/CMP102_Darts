@@ -76,20 +76,6 @@ int Board::AimForSegment(int segmentNumber, uint8_t aimPreference, double accura
 	return retValue;
 }
 
-//int Board::AimForBull(int accuracy, bool aimPreference)
-//{
-	//aimPreference == 1 == aim for outer ring (25)
-	//aimPreference == 2 == aim for inner ring (50)
-	//srand(time(NULL));
-	//uint8_t value = rand() % 100;
-
-	//If the player misses then return a random number from around the bull
-	//Using the same double/treble formula as above, return the exact number the player is aiming for if they have a high accuracy, else just return the outer ring value
-	//A side effect of this is that if the player is aiming for the 25 and they clear the first bar then they are always going to get it, since the default is 25 anyway
-
-
-//}
-
 //Find the segment number that corresponds with that given target value
 uint8_t Board::GetSegmentNumber(int target)
 {
@@ -110,16 +96,11 @@ SegmentTarget Board::GetBestTarget(uint8_t goal)
 	{
 		return { 0, 3 };
 	}
-	//Revised aiming tactic if the goal is low enough then simply aim for the normal segment
-			//This will increase the odds of actually hitting the value you want (since hitting a double 2 is much harder than a single 4)
+	
+	//Always try to aim for a bull if the desired goal is 50, just to make the game a bit more interesting
 	if (goal == 50)
 	{
-		//Special case for if the goal is 50, since the below code would be unable to deal with it without significant modification
 		return{ 21, 2 };
-	}
-	if (goal == 25)
-	{
-		return { 21, 1 };
 	}
 
 	//Find if the goal can be found in the array as a single target (including the outer bull)
@@ -132,6 +113,7 @@ SegmentTarget Board::GetBestTarget(uint8_t goal)
 		}
 		return { GetSegmentNumber(1), 1 };
 	}
+	
 	//If the above check fails then try to find if the target could be gotten with doubles or trebles
 	if (goal % 2 == 0)
 	{

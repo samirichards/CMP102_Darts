@@ -156,7 +156,7 @@ void Player::ResetBust()
 	BustFlag = false; 
 }
 
-uint32_t Player::GetLifetimethrows()
+uint32_t Player::GetLifetimeThrows()
 {
 	return lifetimeThrows;
 }

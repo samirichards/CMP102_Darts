@@ -34,7 +34,7 @@ public:
 	void ResetStats();
 
 	uint32_t GetLifetimePreciseHits();
-	uint32_t GetLifetimethrows();
+	uint32_t GetLifetimeThrows();
 	uint32_t GetTotalMatchWins();
 	uint32_t GetRoundsWonInSet();
 	uint32_t GetLifetimeBulls();
@@ -70,7 +70,7 @@ private:
 	uint32_t lifetimeThrows;
 	uint32_t lifetimeBulls;
 
-	//This means individual round wins
+	//This means total individual round wins
 	uint32_t lifetimeTotalWins;
 };
 

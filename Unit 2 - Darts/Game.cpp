@@ -90,20 +90,31 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 					InitialisePlayers();
 					RoundNumber = 0;
 					std::cout << "Round is now running\n";
+					//This is an individual round
+					//With each player individually taking turns to throw darts
 					do
 					{
 						RoundNumber++;
 						std::cout << "Round " << RoundNumber << endl;
 
+						//This for loop means that potentially there could be more than 2 players, although in this program right now that would never be the case
 						for (uint8_t i = 0; i < Players.size(); i++)
 						{
+							//Store their current state so it can be restored in the event of a foul
 							Players[i]->StorePreviousState();
+
+							//Using a variable here means that the amount of times the player throws at the dartboard can be changed easily
 							for (uint8_t d = 1; d <= DartsPerRound; d++)
 							{
+								//Check if the player has bust already
+								//If the have then skip their go
 								if (!Players[i]->CheckBust())
 								{
 									Players[i]->ThrowDart(d);
 
+									//Check if the player has hit 0 before the end of the round
+									//If they have then restore them to their previous state
+									//Also break out of the loop so that the other player can play their round
 									if (Players[i]->GetCurrentScore() == 0 && RoundNumber < 3)
 									{
 										std::cout << "FOUL" << endl;
@@ -112,6 +123,7 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 										break;
 									}
 
+									//Report back what the player wanted to aim for (even if they didn't hit it)
 									std::cout << Players[i]->GetPlayerName() << " Aimed for a ";
 									if (Players[i]->GetIntent().AimModifier == 1)
 									{
@@ -125,6 +137,8 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 									{
 										std::cout << "Treble ";
 									}
+
+									//Report what the player actually hit
 									std::cout << static_cast<int>(DartBoard->segments[Players[i]->GetIntent().segmentNumber]) << endl;
 									std::cout << Players[i]->GetPlayerName() << " threw and got " << Players[i]->GetLastScore() << ", Currently has a score of " << Players[i]->GetCurrentScore() << endl;
 								}
@@ -133,29 +147,31 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 									std::cout << Players[i]->GetPlayerName() << " has bust" << endl;
 								}
 							}
+							
+							//Reset the player bust flag so that they can play again in the next round
 							Players[i]->ResetBust();
 						}
 						std::cout << "------------------------\n";
+						//If the game has not exceeded the round limit then check if there is a winner
 						if (RoundNumber < NumberOfRounds)
 						{
 							GameRunning = !CheckForWin();
 						}
 						else
 						{
-							if (CheckForWin())
-							{
-								GameRunning = false;
-							}
-							else
+							//If the game has exceeded the round limit then end the game
+							//Also check if there was a draw at this point
+							GameRunning = false;
+							if (!CheckForWin())
 							{
 								std::cout << "Game ended in a draw after " << NumberOfRounds << " rounds" << endl;
-								GameRunning = false;
 							}
 						}
 
 					} while (GameRunning);
-					std::cout << "Round is no longer running\n";
+					std::cout << "End of round\n";
 
+					//If GetRoundWinner returns uint8_max (256) then it means that there was no winner
 					if (GetRoundWinner() != UINT8_MAX)
 					{
 						std::cout << Players[GetRoundWinner()]->GetPlayerName() << " is the winner of this round\n";
@@ -182,31 +198,42 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 	//Cut down version of the above code which does not make use of any cout statements to speed up execution
 	else
 	{
-		for (size_t k = 0; k < numberOfGames; k++)
+		for (uint32_t k = 0; k < numberOfGames; k++)
 		{
 			ResetSetNumber();
 			//This do loop will continue until there is an overall match winner (aka if any player has a total sets won of more than or equal to 7)
 			do
 			{
 				//3 rounds per set Loop
-				for (size_t roundNo = 1; roundNo < 4; roundNo++)
+				for (size_t roundNo = 1; roundNo < 6; roundNo++)
 				{
 					GameRunning = true;
 					InitialisePlayers();
 					RoundNumber = 0;
+					//This is an individual round
+					//With each player individually taking turns to throw darts
 					do
 					{
 						RoundNumber++;
 
+						//This for loop means that potentially there could be more than 2 players, although in this program right now that would never be the case
 						for (uint8_t i = 0; i < Players.size(); i++)
 						{
+							//Store their current state so it can be restored in the event of a foul
 							Players[i]->StorePreviousState();
+
+							//Using a variable here means that the amount of times the player throws at the dartboard can be changed easily
 							for (uint8_t d = 1; d <= DartsPerRound; d++)
 							{
+								//Check if the player has bust already
+								//If the have then skip their go
 								if (!Players[i]->CheckBust())
 								{
 									Players[i]->ThrowDart(d);
 
+									//Check if the player has hit 0 before the end of the round
+									//If they have then restore them to their previous state
+									//Also break out of the loop so that the other player can play their round
 									if (Players[i]->GetCurrentScore() == 0 && RoundNumber < 3)
 									{
 										Players[i]->RestorePreviousState();
@@ -214,12 +241,25 @@ void Game::StartGame(uint32_t numberOfGames, bool displayText)
 									}
 								}
 							}
+
+							//Reset the player bust flag so that they can play again in the next round
 							Players[i]->ResetBust();
 						}
-						GameRunning = !CheckForWin();
+						//If the game has not exceeded the round limit then check if there is a winner
+						if (RoundNumber < NumberOfRounds)
+						{
+							GameRunning = !CheckForWin();
+						}
+						else
+						{
+							//If the game has exceeded the round limit then end the game
+							//Also check if there was a draw at this point
+							GameRunning = false;
+						}
 
 					} while (GameRunning);
 
+					//If GetRoundWinner returns uint8_max (256) then it means that there was no winner
 					if (GetRoundWinner() != UINT8_MAX)
 					{
 						Players[GetRoundWinner()]->IncrementLifetimeWins();
@@ -273,7 +313,7 @@ void Game::PrintLifetimeStats()
 	std::cout << "Total matches were " << NumberOfGames << endl << endl;
 	for (size_t i = 0; i < Players.size(); i++)
 	{
-		std::cout << Players[i]->GetPlayerName() << " Total throws = " << Players[i]->GetLifetimethrows() << endl;
+		std::cout << Players[i]->GetPlayerName() << " Total throws = " << Players[i]->GetLifetimeThrows() << endl;
 		std::cout << "Total bulls hit = " << Players[i]->GetLifetimeBulls() << endl;
 		std::cout << "Total precise hits = " << Players[i]->GetLifetimePreciseHits() << endl;
 		std::cout << "Total wins (Individual rounds) = " << Players[i]->GetLifetimeWins() << endl;
@@ -282,7 +322,7 @@ void Game::PrintLifetimeStats()
 		std::cout << "Reported accuracy = " << Players[i]->GetAccuracy() << "% \n";
 		std::cout << "Projected Accuracy = " << static_cast<double>(Players[i]->GetAccuracy()) * (static_cast<double>(Players[i]->GetAccuracy()) / 100) << "% \n";
 		
-		std::cout << "Real accuracy: " << (static_cast<double>(Players[i]->GetLifetimePreciseHits()) / static_cast<double>(Players[i]->GetLifetimethrows())) * 100 << "%" << endl;
+		std::cout << "Real accuracy: " << (static_cast<double>(Players[i]->GetLifetimePreciseHits()) / static_cast<double>(Players[i]->GetLifetimeThrows())) * 100 << "%" << endl;
 
 		std::cout << "-------------------\n";
 	}
@@ -291,6 +331,9 @@ void Game::PrintLifetimeStats()
 
 uint8_t Game::GetSetWinner()
 {
+	//This function is not very efficient but it gets the job done
+	//It gets the highest score in the round and then checks afterwards who's score that was
+	//Doesn't make much sense here since it's only 2 players, but my code has been designed so that if I wanted to I could easily add more players
 	uint8_t CurrentMaxScore = 0;
 	for (uint32_t i = 0; i < Players.size(); i++)
 	{
@@ -329,10 +372,10 @@ bool Game::IsMatchWon()
 			CurrentMaxScore = Players[i]->GetTotalSetWins();
 		}
 	}
+	//If any one player has a score of 7 or more then it is impossible for the other player to win, so declare them a winner now instead
 	if (CurrentMaxScore >= 7 || SetNumber >= 13)
 	{
 		return true;
 	}
 	return false;
-
 }
