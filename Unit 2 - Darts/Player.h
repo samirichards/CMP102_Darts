@@ -4,9 +4,9 @@
 using namespace std;
 
 struct PlayerBackup {
-	uint8_t score;
 	uint8_t lastScoreHit;
 	uint8_t hitBulls;
+	uint8_t score;
 };
 
 
@@ -14,61 +14,63 @@ class Player
 {
 public:
 	Player(string name, int accuracy, int startingScore);
-	int GetAccuracy();
-	void SetAccuracy(int value);
-	int GetThrows();
+	
 	void ThrowDart(uint8_t currentRound);
-	void ResetStats();
-	int Getbulls();
-	void SetTarget(Board* target);
 	void CheckAim(uint8_t currentRound);
-	string GetPlayerName();
-	void SetAim(int segmentNumber);
-	int GetLastScore();
-	int GetCurrentScore();
-	void StorePreviousState();
+	void SetTarget(Board* target);
+
 	void RestorePreviousState();
-	SegmentTarget GetIntent();
+	void StorePreviousState();
+
 	bool CheckBust();
 	void ResetBust();
-	uint32_t GetLifetimethrows();
-	uint32_t GetLifetimeBulls();
-	uint32_t GetLifetimeprecisehits();
-	void IncrementLifetimeWins();
-	uint32_t GetLifetimeWins();
 
-	uint32_t GetTotalSetWins();
-	uint32_t GetTotalMatchWins();
-	void IncrementSetWins();
-	void IncrementMatchWins();
-
-	uint32_t GetRoundsWonInSet();
 	void IncrementRoundsWonInSet();
+	void IncrementLifetimeWins();
+	void IncrementMatchWins();
+	void IncrementSetWins();
+
 	void ResetRoundsWon();
+	void ResetStats();
+
+	uint32_t GetLifetimePreciseHits();
+	uint32_t GetLifetimeThrows();
+	uint32_t GetTotalMatchWins();
+	uint32_t GetRoundsWonInSet();
+	uint32_t GetLifetimeBulls();
+	uint32_t GetTotalSetWins();
+	uint32_t GetLifetimeWins();
+	SegmentTarget GetIntent();
+	string GetPlayerName();
+	int GetCurrentScore();
+	int GetLastScore();
+	int GetAccuracy();
+	int GetThrows();
+	int Getbulls();
 
 private:
 	string PlayerName;
-	int Accuracy;
-	int CurrentScore;
-	int Throws;
 	int LastScoreHit;
+	int CurrentScore;
+	int Accuracy;
 	int HitBulls;
+	int Throws;
 
 	Board* TargetBoard;
-	uint8_t Aim;
-	uint8_t AimPref;
 	PlayerBackup prev;
+	uint8_t AimPref;
 	bool BustFlag;
+	uint8_t Aim;
 
+	uint32_t TotalMatchWins;
 	uint32_t RoundWonInSet;
 	uint32_t TotalSetWins;
-	uint32_t TotalMatchWins;
 
+	uint32_t lifetimePreciseHits;
 	uint32_t lifetimeThrows;
 	uint32_t lifetimeBulls;
-	uint32_t lifetimePreciseHits;
 
-	//This means individual round wins
+	//This means total individual round wins
 	uint32_t lifetimeTotalWins;
 };
 

@@ -6,41 +6,34 @@ class Game
 {
 public:
 	Game(Board* dartBoard, int darts, uint32_t _numberOfRounds);
-	void SetBoard(Board* dartBoard);
+	void StartGame(uint32_t numberOfGames, bool displayText);
+
 	void AddPlayer(Player* player);
 	void InitialisePlayers();
 	void PrintStats();
-	void StartGame(uint32_t numberOfGames, bool displayText);
-	bool CheckForWin();
-	uint8_t GetRoundWinner();
-	void PrintLifetimeStats();
-	uint8_t GetSetWinner();
-	void IncrementSetNumber();
-	void ResetSetNumber();
-	bool IsMatchWon();
+
 	void PrintSetStats(uint32_t MatchNumber);
-	uint8_t GetMatchWinner();
+	uint32_t GetMatchWinner();
+	void PrintLifetimeStats();
+	void IncrementSetNumber();
+	uint8_t GetRoundWinner();
+	uint8_t GetSetWinner();
+	void ResetSetNumber();
+	bool CheckForWin();
+	bool IsMatchWon();
+
+
 
 private:
-	Board* DartBoard;
 	std::vector<Player*> Players;
+	Board* DartBoard;
 	bool GameRunning;
 
-	int RoundNumber = 0;
-	int DartsPerRound = 3;
+	uint32_t DartsPerRound = 3;
+	uint32_t RoundNumber = 0;
 
-	int SetNumber = 0;
-	int NumberOfSets = 0;
-
-	int MatchNumber = 0;
-	int NumberOfMatches = 0;
+	uint32_t SetNumber = 0;
 
 	uint32_t NumberOfRounds = 0;
 	uint32_t NumberOfGames = 0;
-
-	//3 Rounds per set
-	//	Each set is best of 3
-
-	//Max of 13 sets per match
-	//	Effectively 7 is the finishing line for sets
 };

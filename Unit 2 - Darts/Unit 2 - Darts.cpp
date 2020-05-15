@@ -9,19 +9,30 @@
 
 int main()
 {
+    bool loopGame = false;
     Board DartBoard;
-    
     Config GameConfig;
-    GameConfig.GetConfig();
+	
+    do
+    {
+        std::cout << "-----------------------------\n";
+        GameConfig.GetConfig();
 
-    Game MainGame = Game(&DartBoard, 3, GameConfig.MaxRounds);
+        Game MainGame = Game(&DartBoard, 3, GameConfig.MaxRounds);
 
-    Player Joe = Player("Joe", GameConfig.JoeAcc, GameConfig.StartingScore);
-    Player Sid = Player("Sid", GameConfig.SidAcc, GameConfig.StartingScore);
+        Player* Joe = new Player("Joe", GameConfig.JoeAcc, GameConfig.StartingScore);
+        Player* Sid = new  Player("Sid", GameConfig.SidAcc, GameConfig.StartingScore);
 
-    MainGame.AddPlayer(&Joe);
-    MainGame.AddPlayer(&Sid);
+        MainGame.AddPlayer(Joe);
+        MainGame.AddPlayer(Sid);
 
-    MainGame.StartGame(GameConfig.NumberOfGames, GameConfig.displayText);
-    system("pause");
+        MainGame.StartGame(GameConfig.NumberOfGames, GameConfig.displayText);
+        delete Joe;
+        delete Sid;
+        system("pause");
+
+        std::cout << "Would you like to run another simulation? (0 for no, anything else for yes)\n";
+        std::cin >> loopGame;
+    }
+    while (loopGame);
 }
