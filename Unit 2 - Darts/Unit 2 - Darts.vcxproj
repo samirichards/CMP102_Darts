@@ -151,6 +151,7 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HumanPlayer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Unit 2 - Darts.cpp" />
   </ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="HumanPlayer.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>

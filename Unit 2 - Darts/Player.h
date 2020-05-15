@@ -48,7 +48,7 @@ public:
 	int GetThrows();
 	int Getbulls();
 
-private:
+protected:
 	string PlayerName;
 	int LastScoreHit;
 	int CurrentScore;
